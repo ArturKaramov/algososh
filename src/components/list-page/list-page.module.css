@@ -1,0 +1,32 @@
+.container {
+  margin: 0 auto;
+  max-width: 952px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 204px repeat(4, 175px);
+  gap: 12px;
+  grid-template-areas: 'inputValue button button button button'
+                      'inputIndex addButton addButton delButton delButton';
+}
+
+.insertAt {
+  grid-area: addButton;
+}
+
+.deleteAt {
+  grid-area: delButton;
+}
+
+.circleList {
+  padding: 0;
+  max-width: 944px;
+  margin: 120px auto 0 auto;
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+}
+
+.circle {
+  display: flex;
+  align-items: center;
+}

@@ -1,0 +1,17 @@
+.container {
+  margin: 0 auto;
+  max-width: 829px;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.circleList {
+  padding: 0;
+  max-width: 944px;
+  margin: 120px auto 0 auto;
+  display: flex;
+  gap: 48px 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  list-style-type: none;
+}
