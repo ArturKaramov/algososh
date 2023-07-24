@@ -32,6 +32,7 @@ export class LinkedList<T> implements ILinkedList<T> {
     const elem = new Node(element);
     !this.head && (this.head = elem);
     this.tail && (this.tail.next = elem);
+    !this.tail && (this.tail = elem);
     elem.next = null;
     this.tail = elem;
     this.size++;
@@ -54,7 +55,6 @@ export class LinkedList<T> implements ILinkedList<T> {
       curr = curr.next;
       currIndex++;
     }
-    console.log(prev, curr, currIndex);
     const elem = new Node(element);
 
     if (curr && prev) {
@@ -81,6 +81,11 @@ export class LinkedList<T> implements ILinkedList<T> {
       if (curr) {
         curr.next = null;
         this.tail = curr;
+      }
+      //если остался последний элемент
+      if (this.head === this.tail) {
+        this.tail = null;
+        this.head = null;
       }
     }
     this.size--;
