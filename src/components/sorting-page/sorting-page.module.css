@@ -24,6 +24,7 @@
 
 .histogram {
   display: flex;
+  height: 320px;
   justify-content: center;
   align-items: flex-end;
   gap: 10px;
