@@ -65,12 +65,15 @@ export const StringComponent = () => {
         <Input
           isLimitText={true}
           maxLength={11}
+          name="string"
+          value={word.join("")}
           onChange={onChange}
           disabled={buttonState}
         />
         <Button
           text={"Развернуть"}
           onClick={reverseWithDelay}
+          disabled={!word.length}
           isLoader={buttonState}
         />
       </div>

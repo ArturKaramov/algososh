@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import styles from "./queue-page.module.css";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
@@ -10,22 +10,32 @@ import { ElementStates } from "../../types/element-states";
 import { delay } from "../../utils/utils";
 import { HEAD, TAIL } from "../../constants/element-captions";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
+import { useForm } from "../../hooks/useForm";
 
 export const QueuePage: React.FC = () => {
   const [queue] = useState(new Queue<string>(QUEUE_SIZE));
   const [data, setData] = useState<(string | null)[]>(queue.getItems());
-  const [input, setInput] = useState<string>("");
+  const { values, handleChange, setValues } = useForm<{ element: string }>({
+    element: "",
+  });
   const [color, setColor] = useState<{ [key: string]: boolean }>({
     HEAD: false,
     TAIL: false,
   });
+  const [loader, setLoader] = useState<{ [key: string]: boolean }>({
+    add: false,
+    delete: false,
+    clear: false,
+  });
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-  };
+  const disable = useMemo(
+    () => Object.values(loader).some((load) => load),
+    [JSON.stringify(loader)]
+  );
 
   const addItem = async () => {
-    queue.enqueue(input);
+    setLoader({ ...loader, add: true });
+    queue.enqueue(values.element);
     setColor({
       head: false,
       tail: true,
@@ -36,9 +46,12 @@ export const QueuePage: React.FC = () => {
       tail: false,
     });
     setData([...queue.getItems()]);
+    setValues({ element: "" });
+    setLoader({ ...loader, add: false });
   };
 
   const deleteItem = async () => {
+    setLoader({ ...loader, delete: true });
     setColor({
       head: true,
       tail: false,
@@ -50,11 +63,15 @@ export const QueuePage: React.FC = () => {
     });
     queue.dequeue();
     setData([...queue.getItems()]);
+    setLoader({ ...loader, delete: false });
   };
 
-  const deleteQueue = () => {
+  const deleteQueue = async () => {
+    setLoader({ ...loader, clear: true });
     queue.clearQueue();
     setData([...queue.getItems()]);
+    await delay(SHORT_DELAY_IN_MS);
+    setLoader({ ...loader, clear: false });
   };
 
   return (
@@ -63,26 +80,31 @@ export const QueuePage: React.FC = () => {
         <Input
           isLimitText={true}
           maxLength={4}
-          value={input}
-          onChange={onChange}
+          name="element"
+          value={values.element}
+          onChange={handleChange}
+          disabled={disable}
         />
         <Button
           text="Добавить"
           extraClass="ml-6"
           onClick={addItem}
-          disabled={!input.length}
+          disabled={!values.element.length || disable}
+          isLoader={loader.add}
         />
         <Button
           text="Удалить"
           extraClass="ml-6"
           onClick={deleteItem}
-          disabled={!data.length}
+          disabled={!data.some((elem) => elem !== null) || disable}
+          isLoader={loader.delete}
         />
         <Button
           text="Очистить"
           extraClass="ml-40"
           onClick={deleteQueue}
-          disabled={!data.length}
+          disabled={!data.some((elem) => elem !== null) || disable}
+          isLoader={loader.clear}
         />
       </div>
       <ul className={styles.circleList}>

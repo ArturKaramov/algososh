@@ -7,57 +7,92 @@ import { ILinkedList, LinkedList } from "../../utils/linked-list";
 import { Circle } from "../ui/circle/circle";
 import { INIT_LIST } from "../../constants/limits";
 import { ArrowIcon } from "../ui/icons/arrow-icon";
-import { IColor } from "../../types/types";
 import { SHORT_DELAY_IN_MS } from "../../constants/delays";
 import { delay } from "../../utils/utils";
 import { ElementStates } from "../../types/element-states";
 import { HEAD, TAIL } from "../../constants/element-captions";
+import { useForm } from "../../hooks/useForm";
 
 export const ListPage: React.FC = () => {
   const [list] = useState<ILinkedList<number | string>>(
     new LinkedList<number | string>()
   );
-  const [values, setValues] = useState<(number | string)[]>([]);
-  const [value, setValue] = useState<number | string>("");
-  const [index, setIndex] = useState<number | null>(null);
+  const { values, handleChange, setValues } = useForm<{
+    node: number | string;
+    index: string;
+  }>({ node: "", index: "" });
+  const [nodes, setNodes] = useState<(number | string)[]>([]);
   const [color, setColor] = useState<{ [key: number]: ElementStates }>({});
   const [head, setHead] = useState<number | string | null>(null);
   const [tail, setTail] = useState<number | string | null>(null);
+  const [loader, setLoader] = useState<{
+    addHead: boolean;
+    addTail: boolean;
+    addIndex: boolean;
+    delHead: boolean;
+    delTail: boolean;
+    delIndex: boolean;
+  }>({
+    addHead: false,
+    addTail: false,
+    addIndex: false,
+    delHead: false,
+    delTail: false,
+    delIndex: false,
+  });
+
+  const disable = useMemo(
+    () => Object.values(loader).some((val) => val === true),
+    [JSON.stringify(loader)]
+  );
+
+  const isValid = useMemo(
+    () => !(parseInt(values.index) < nodes.length),
+    [nodes, values.index]
+  );
 
   useEffect(() => {
     INIT_LIST.forEach((item: string | number) => {
       list.append(item);
     });
-    setValues([...list.print()]);
+    setNodes([...list.print()]);
   }, []);
 
   const prepend = async () => {
-    list.prepend(value);
+    setLoader({ ...loader, addHead: true });
+    list.prepend(values.node);
     setHead(0);
     await delay(SHORT_DELAY_IN_MS);
     setHead(null);
     setColor({ 0: ElementStates.Modified });
-    setValues([...list.print()]);
+    setNodes([...list.print()]);
     await delay(SHORT_DELAY_IN_MS);
     setColor({ 0: ElementStates.Default });
+    setValues({ node: "", index: "" });
+    setLoader({ ...loader, addHead: false });
   };
 
   const append = async () => {
+    setLoader({ ...loader, addTail: true });
     const lastIndex: number = list.getSize();
-    list.append(value);
+    list.append(values.node);
     setHead(lastIndex - 1);
     await delay(SHORT_DELAY_IN_MS);
     setHead(null);
     setColor({ [lastIndex]: ElementStates.Modified });
-    setValues([...list.print()]);
+    setNodes([...list.print()]);
     await delay(SHORT_DELAY_IN_MS);
     setColor({});
+    setValues({ node: "", index: "" });
+    setLoader({ ...loader, addTail: false });
   };
 
   const insertAt = async () => {
+    setLoader({ ...loader, addIndex: true });
+    const index = parseInt(values.index);
     if (index) {
       const newColor: { [key: number]: ElementStates } = {};
-      list.insertAt(value, index);
+      list.insertAt(values.node, index);
       for (let i = 0; i <= index; i++) {
         setHead(i);
         newColor[i - 1] = ElementStates.Changing;
@@ -67,30 +102,39 @@ export const ListPage: React.FC = () => {
         setColor({});
       }
       setColor({ [index]: ElementStates.Modified });
-      setValues([...list.print()]);
+      console.log(list.print());
+      setNodes([...list.print()]);
       await delay(SHORT_DELAY_IN_MS);
       setColor({});
+      setValues({ node: "", index: "" });
+      setLoader({ ...loader, addIndex: false });
     }
   };
 
   const deleteHead = async () => {
+    setLoader({ ...loader, delHead: true });
     list.deleteHead();
     setTail(0);
     await delay(SHORT_DELAY_IN_MS);
     setTail(null);
-    setValues([...list.print()]);
+    setNodes([...list.print()]);
+    setLoader({ ...loader, delHead: false });
   };
 
   const deleteTail = async () => {
+    setLoader({ ...loader, delTail: true });
     list.deleteTail();
     setTail(list.getSize());
     await delay(SHORT_DELAY_IN_MS);
     setTail(null);
-    setValues([...list.print()]);
+    setNodes([...list.print()]);
+    setLoader({ ...loader, delTail: false });
   };
 
   const deleteAt = async () => {
+    const index = parseInt(values.index);
     if (index) {
+      setLoader({ ...loader, delIndex: true });
       const newColor: { [key: number]: ElementStates } = {};
       list.deleteAt(index);
       for (let i = 0; i <= index; i++) {
@@ -102,7 +146,9 @@ export const ListPage: React.FC = () => {
       setTail(index);
       await delay(SHORT_DELAY_IN_MS);
       setTail(null);
-      setValues([...list.print()]);
+      setNodes([...list.print()]);
+      setValues({ node: "", index: "" });
+      setLoader({ ...loader, delIndex: false });
     }
   };
 
@@ -113,46 +159,60 @@ export const ListPage: React.FC = () => {
           placeholder="Введите значение"
           isLimitText={true}
           maxLength={4}
-          value={value}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setValue(e.target.value)
-          }
+          name="node"
+          value={values.node}
+          onChange={handleChange}
+          disabled={disable}
         />
-        <Button text="Добавить в head" onClick={prepend} disabled={!value} />
-        <Button text="Добавить в tail" onClick={append} disabled={!value} />
+        <Button
+          text="Добавить в head"
+          onClick={prepend}
+          disabled={!values.node || disable}
+          isLoader={loader.addHead}
+        />
+        <Button
+          text="Добавить в tail"
+          onClick={append}
+          disabled={!values.node || disable}
+          isLoader={loader.addTail}
+        />
         <Button
           text="Удалить из head"
           onClick={deleteHead}
-          disabled={!values.length}
+          disabled={!nodes.length || disable}
+          isLoader={loader.delHead}
         />
         <Button
           text="Удалить из tail"
           onClick={deleteTail}
-          disabled={!values.length}
+          disabled={!nodes.length || disable}
+          isLoader={loader.delTail}
         />
         <Input
           placeholder="Введите индекс"
           type="number"
-          value={index ? index : ""}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setIndex(Number(e.target.value))
-          }
+          name="index"
+          value={values.index}
+          onChange={handleChange}
+          disabled={disable}
         />
         <Button
           text="Добавить по индексу"
           extraClass={styles.insertAt}
           onClick={insertAt}
-          disabled={!index || !value}
+          disabled={!values.index || !values.node || disable || isValid}
+          isLoader={loader.addIndex}
         />
         <Button
           text="Удалить по индексу"
           extraClass={styles.deleteAt}
           onClick={deleteAt}
-          disabled={!index}
+          disabled={!values.index || disable || isValid}
+          isLoader={loader.delIndex}
         />
       </div>
       <ul className={styles.circleList}>
-        {values.map((item, i) => (
+        {nodes.map((item, i) => (
           <li className={styles.circle} key={i}>
             <Circle
               state={i in color ? color[i] : undefined}
@@ -161,7 +221,7 @@ export const ListPage: React.FC = () => {
               head={
                 i === head ? (
                   <Circle
-                    letter={value.toString()}
+                    letter={values.node.toString()}
                     state={ElementStates.Changing}
                     isSmall
                   />
@@ -176,12 +236,12 @@ export const ListPage: React.FC = () => {
                     state={ElementStates.Changing}
                     isSmall
                   />
-                ) : i === values.length - 1 ? (
+                ) : i === nodes.length - 1 ? (
                   TAIL
                 ) : null
               }
             />
-            {i !== values.length - 1 && <ArrowIcon />}
+            {i !== nodes.length - 1 && <ArrowIcon />}
           </li>
         ))}
       </ul>
