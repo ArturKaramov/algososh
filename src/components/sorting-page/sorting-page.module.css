@@ -1,0 +1,31 @@
+.settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 48px;
+}
+
+.radio {
+  display: flex;
+  justify-content: center;
+  gap: 40px
+}
+
+.button {
+  width: 205px;
+  box-sizing: border-box;
+}
+
+.direction {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.histogram {
+  display: flex;
+  height: 320px;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 10px;
+}

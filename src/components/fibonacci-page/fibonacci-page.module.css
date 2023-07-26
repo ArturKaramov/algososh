@@ -1,0 +1,18 @@
+.inputData {
+  margin: 0 auto;
+  max-width: 567px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 377px auto;
+  gap: 12px;
+}
+
+.circleList {
+  max-width: 944px;
+  margin: 48px auto 0 auto;
+  display: flex;
+  gap: 48px 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  list-style-type: none;
+}
