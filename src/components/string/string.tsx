@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./string.module.css";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
 import { Input } from "../ui/input/input";
@@ -69,17 +69,19 @@ export const StringComponent = () => {
           value={word.join("")}
           onChange={onChange}
           disabled={buttonState}
+          data-testid="input"
         />
         <Button
           text={"Развернуть"}
           onClick={reverseWithDelay}
           disabled={!word.length}
           isLoader={buttonState}
+          data-testid="button"
         />
       </div>
       <ul className={styles.circleList}>
         {word.map((letter, i) => (
-          <li key={i}>
+          <li key={i} data-testid="letter" data-letter={letter}>
             <Circle
               state={color[i] ? color[i] : ElementStates.Default}
               letter={letter}

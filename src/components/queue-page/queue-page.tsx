@@ -87,6 +87,7 @@ export const QueuePage: React.FC = () => {
         />
         <Button
           text="Добавить"
+          id="add"
           extraClass="ml-6"
           onClick={addItem}
           disabled={!values.element.length || disable}
@@ -94,6 +95,7 @@ export const QueuePage: React.FC = () => {
         />
         <Button
           text="Удалить"
+          id="delete"
           extraClass="ml-6"
           onClick={deleteItem}
           disabled={!data.some((elem) => elem !== null) || disable}
@@ -101,6 +103,7 @@ export const QueuePage: React.FC = () => {
         />
         <Button
           text="Очистить"
+          id="clear"
           extraClass="ml-40"
           onClick={deleteQueue}
           disabled={!data.some((elem) => elem !== null) || disable}

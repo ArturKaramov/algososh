@@ -16,24 +16,32 @@ import {
   MAX_VALUE,
 } from "../../constants/limits";
 
-export const SortingPage: React.FC = () => {
+interface ISortingPage {
+  initArr?: number[] | null;
+}
+
+export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
   const [arr, setArr] = useState<IColorNumbers[]>([]);
   const [sortType, setSortType] = useState<"bubble" | "selection">("selection");
   const [buttonState, setButtonState] = useState<Direction | null>(null);
 
   useEffect(() => {
-    randomArr();
+    initArray();
+    return () => {
+      setArr([]);
+    };
   }, []);
 
-  const swap = (
-    arr: IColorNumbers[],
-    firstIndex: number,
-    secondIndex: number
-  ): IColorNumbers[] => {
-    let temp = arr[firstIndex].value;
-    arr[firstIndex].value = arr[secondIndex].value;
-    arr[secondIndex].value = temp;
-    return arr;
+  const initArray = () => {
+    if (initArr) {
+      const obj: IColorNumbers[] = [];
+      for (let i = 0; i < initArr.length; i++) {
+        obj.push({ value: initArr[i], color: ElementStates.Default });
+      }
+      setArr(obj);
+    } else {
+      randomArr();
+    }
   };
 
   const randomArr = () => {
@@ -46,6 +54,17 @@ export const SortingPage: React.FC = () => {
       });
     }
     setArr(arr);
+  };
+
+  const swap = (
+    arr: IColorNumbers[],
+    firstIndex: number,
+    secondIndex: number
+  ): IColorNumbers[] => {
+    let temp = arr[firstIndex].value;
+    arr[firstIndex].value = arr[secondIndex].value;
+    arr[secondIndex].value = temp;
+    return arr;
   };
 
   const bubbleSort = async (direction: Direction) => {
@@ -133,18 +152,20 @@ export const SortingPage: React.FC = () => {
           <Button
             sorting={Direction.Ascending}
             text="По возрастанию"
+            data-testid="asc"
             extraClass={styles.button}
             onClick={() => sort(Direction.Ascending)}
             isLoader={buttonState === Direction.Ascending}
-            disabled={!!buttonState}
+            disabled={!!buttonState || !arr.length}
           />
           <Button
             sorting={Direction.Descending}
             text="По убыванию"
+            data-testid="des"
             extraClass={styles.button}
             onClick={() => sort(Direction.Descending)}
             isLoader={buttonState === Direction.Descending}
-            disabled={!!buttonState}
+            disabled={!!buttonState || !arr.length}
           />
         </div>
         <Button
@@ -154,7 +175,7 @@ export const SortingPage: React.FC = () => {
           disabled={!!buttonState}
         />
       </div>
-      <div className={styles.histogram}>
+      <div className={styles.histogram} data-testid="array">
         {arr.map((obj, i) => (
           <Column index={obj.value} key={i} state={obj.color} />
         ))}

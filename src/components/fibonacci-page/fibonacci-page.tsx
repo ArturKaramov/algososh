@@ -48,6 +48,7 @@ export const FibonacciPage: React.FC = () => {
           onClick={getFib}
           disabled={!values.number || parseInt(values.number) > MAX_FIBO}
           isLoader={buttonState}
+          type="submit"
         />
       </div>
       <ul className={styles.circleList}>

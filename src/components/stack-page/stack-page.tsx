@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Stack } from "../../utils/stack";
 import styles from "./stack-page.module.css";
 import { SolutionLayout } from "../ui/solution-layout/solution-layout";
@@ -66,6 +66,7 @@ export const StackPage: React.FC = () => {
         />
         <Button
           text="Добавить"
+          id="add"
           extraClass="ml-6"
           onClick={addItem}
           disabled={!values.element}
@@ -73,6 +74,7 @@ export const StackPage: React.FC = () => {
         />
         <Button
           text="Удалить"
+          id="delete"
           extraClass="ml-6"
           onClick={deleteItem}
           disabled={!data.length}
@@ -80,6 +82,7 @@ export const StackPage: React.FC = () => {
         />
         <Button
           text="Очистить"
+          id="clear"
           extraClass="ml-40"
           onClick={deleteStack}
           disabled={!data.length}
