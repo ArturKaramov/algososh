@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Testing Button Button with text 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined false "
+  type="button"
+>
+  <p
+    className="text undefined"
+  >
+    Testing
+  </p>
+</button>
+`;
+
+exports[`Testing Button Button without text 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined false "
+  type="button"
+>
+  <p
+    className="text undefined"
+  />
+</button>
+`;
+
+exports[`Testing Button Disabled Button 1`] = `
+<button
+  className="text text_type_button text_color_primary button undefined false "
+  disabled={true}
+  type="button"
+>
+  <p
+    className="text undefined"
+  />
+</button>
+`;

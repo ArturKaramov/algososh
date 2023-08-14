@@ -166,24 +166,28 @@ export const ListPage: React.FC = () => {
         />
         <Button
           text="Добавить в head"
+          id="addHead"
           onClick={prepend}
           disabled={!values.node || disable}
           isLoader={loader.addHead}
         />
         <Button
           text="Добавить в tail"
+          id="addTail"
           onClick={append}
           disabled={!values.node || disable}
           isLoader={loader.addTail}
         />
         <Button
           text="Удалить из head"
+          id="deleteHead"
           onClick={deleteHead}
           disabled={!nodes.length || disable}
           isLoader={loader.delHead}
         />
         <Button
           text="Удалить из tail"
+          id="deleteTail"
           onClick={deleteTail}
           disabled={!nodes.length || disable}
           isLoader={loader.delTail}
@@ -198,6 +202,7 @@ export const ListPage: React.FC = () => {
         />
         <Button
           text="Добавить по индексу"
+          id="addIndex"
           extraClass={styles.insertAt}
           onClick={insertAt}
           disabled={!values.index || !values.node || disable || isValid}
@@ -205,6 +210,7 @@ export const ListPage: React.FC = () => {
         />
         <Button
           text="Удалить по индексу"
+          id="deleteIndex"
           extraClass={styles.deleteAt}
           onClick={deleteAt}
           disabled={!values.index || disable || isValid}

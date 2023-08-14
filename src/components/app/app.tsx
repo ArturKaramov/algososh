@@ -9,7 +9,7 @@ import { StringComponent } from "../string/string";
 import { SortingPage } from "../sorting-page/sorting-page";
 import { StackPage } from "../stack-page/stack-page";
 
-function App() {
+export function App() {
   return (
     <div className={styles.app}>
       <BrowserRouter>
