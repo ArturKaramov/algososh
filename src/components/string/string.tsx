@@ -73,6 +73,7 @@ export const StringComponent = () => {
         />
         <Button
           text={"Развернуть"}
+          type="submit"
           onClick={reverseWithDelay}
           disabled={!word.length}
           isLoader={buttonState}
