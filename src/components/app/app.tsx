@@ -8,31 +8,40 @@ import { QueuePage } from "../queue-page/queue-page";
 import { StringComponent } from "../string/string";
 import { SortingPage } from "../sorting-page/sorting-page";
 import { StackPage } from "../stack-page/stack-page";
+import {
+  BASE_URL,
+  STRING_URL,
+  FIBO_URL,
+  SORT_URL,
+  STACK_URL,
+  QUEUE_URL,
+  LIST_URL,
+} from "../../constants/url";
 
 export function App() {
   return (
     <div className={styles.app}>
       <BrowserRouter>
         <Switch>
-          <Route path="/" exact>
+          <Route path={BASE_URL} exact>
             <MainPage />
           </Route>
-          <Route path="/recursion">
+          <Route path={STRING_URL}>
             <StringComponent />
           </Route>
-          <Route path="/fibonacci">
+          <Route path={FIBO_URL}>
             <FibonacciPage />
           </Route>
-          <Route path="/sorting">
+          <Route path={SORT_URL}>
             <SortingPage />
           </Route>
-          <Route path="/stack">
+          <Route path={STACK_URL}>
             <StackPage />
           </Route>
-          <Route path="/queue">
+          <Route path={QUEUE_URL}>
             <QueuePage />
           </Route>
-          <Route path="/list">
+          <Route path={LIST_URL}>
             <ListPage />
           </Route>
         </Switch>

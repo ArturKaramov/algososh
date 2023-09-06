@@ -49,4 +49,4 @@
 
 ## 📃 Стек
 
-- React, TypeScript
+- React, TypeScript, Jest, Cypress
