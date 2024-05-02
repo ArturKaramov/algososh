@@ -4,6 +4,7 @@
   align-items: center;
   box-sizing: border-box;
   width: 50px;
+  position: relative;
 }
 
 .column {
@@ -20,4 +21,9 @@
 
 .modified {
   background-color: var(--modified-color);
+}
+
+.part {
+  position: absolute;
+  top: -20px;
 }

@@ -1,7 +1,8 @@
-import { ElementStates } from "./element-states";
+import { ElementStates } from './element-states';
 
 export interface IColorNumbers {
   value: number;
+  part?: 'left' | 'right';
   color: ElementStates;
 }
 
