@@ -16,13 +16,21 @@ describe('Testing SortingPage', () => {
 
     const bubble = screen.getByLabelText('Пузырёк');
     const selection = screen.getByLabelText('Выбор');
+    const quick = screen.getByLabelText('Быстрая');
     fireEvent.click(bubble);
     expect(bubble).toBeChecked();
     expect(selection).not.toBeChecked();
+    expect(quick).not.toBeChecked();
 
     fireEvent.click(selection);
     expect(selection).toBeChecked();
     expect(bubble).not.toBeChecked();
+    expect(quick).not.toBeChecked();
+
+    fireEvent.click(quick);
+    expect(selection).not.toBeChecked();
+    expect(bubble).not.toBeChecked();
+    expect(quick).toBeChecked();
   });
 
   it('With empty array', () => {
@@ -97,6 +105,36 @@ describe('Testing SortingPage', () => {
     const asc = screen.getByTestId('asc');
     const bubble = screen.getByLabelText('Пузырёк');
     fireEvent.click(bubble);
+    fireEvent.click(asc);
+    expect(screen.getByTestId('column')).toHaveTextContent('30');
+  });
+
+  it('With one element in array, descending quick', () => {
+    render(
+      <BrowserRouter>
+        <Route>
+          <SortingPage initArr={[30]} />
+        </Route>
+      </BrowserRouter>,
+    );
+    const des = screen.getByTestId('des');
+    const quick = screen.getByLabelText('Быстрая');
+    fireEvent.click(quick);
+    fireEvent.click(des);
+    expect(screen.getByTestId('column').textContent).toBe('30');
+  });
+
+  it('With one element in array, ascending quick', () => {
+    render(
+      <BrowserRouter>
+        <Route>
+          <SortingPage initArr={[30]} />
+        </Route>
+      </BrowserRouter>,
+    );
+    const asc = screen.getByTestId('asc');
+    const quick = screen.getByLabelText('Быстрая');
+    fireEvent.click(quick);
     fireEvent.click(asc);
     expect(screen.getByTestId('column')).toHaveTextContent('30');
   });
@@ -197,6 +235,65 @@ describe('Testing SortingPage', () => {
     const des = screen.getByTestId('des');
     const selection = screen.getByLabelText('Выбор');
     fireEvent.click(selection);
+    fireEvent.click(des);
+    const result = screen.getAllByTestId('column');
+    await waitFor(
+      () => {
+        expect(result[0]).toHaveTextContent('45');
+      },
+      { timeout: 4000 },
+    );
+    await waitFor(
+      () => {
+        expect(result[1]).toHaveTextContent('30');
+      },
+      { timeout: 4000 },
+    );
+    await waitFor(
+      () => {
+        expect(result[2]).toHaveTextContent('15');
+      },
+      { timeout: 4000 },
+    );
+  });
+
+  it('With normal length array, ascending quick', async () => {
+    render(
+      <BrowserRouter>
+        <Route>
+          <SortingPage initArr={[30, 15, 45]} />
+        </Route>
+      </BrowserRouter>,
+    );
+
+    const asc = screen.getByTestId('asc');
+    const quick = screen.getByLabelText('Быстрая');
+    fireEvent.click(quick);
+    fireEvent.click(asc);
+
+    const result = screen.getAllByTestId('column');
+    await waitFor(
+      () => {
+        expect(result[0]).toHaveTextContent('15');
+      },
+      { timeout: 4000 },
+    );
+    expect(result[1]).toHaveTextContent('30');
+    expect(result[2]).toHaveTextContent('45');
+  });
+
+  it('With normal length array, descending quick', async () => {
+    render(
+      <BrowserRouter>
+        <Route>
+          <SortingPage initArr={[30, 15, 45]} />
+        </Route>
+      </BrowserRouter>,
+    );
+
+    const des = screen.getByTestId('des');
+    const quick = screen.getByLabelText('Быстрая');
+    fireEvent.click(quick);
     fireEvent.click(des);
     const result = screen.getAllByTestId('column');
     await waitFor(

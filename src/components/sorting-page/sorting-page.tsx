@@ -110,18 +110,13 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
 
   const quickSort = async (direction: Direction) => {
     const newArr = [...arr];
+
     await sort(newArr);
 
-    async function sort(array: IColorNumbers[], start?: number, finish?: number) {
-      if (!start) {
-        start = 0;
-      }
-      if (!finish) {
-        finish = array.length;
-      }
-      if (start === finish || start > finish) return;
+    async function sort(array: IColorNumbers[], start: number = 0, finish: number = array.length) {
+      if (finish - start < 2) return;
 
-      const pivot = Math.floor(Math.random() * (finish - start));
+      const pivot = start + Math.floor(Math.random() * (finish - start));
 
       setArr((prev) => {
         prev[pivot].color = ElementStates.Modified;
@@ -134,7 +129,11 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
         if (i === pivot) {
           continue;
         }
-        if (array[pivot].value > array[i].value) {
+        if (
+          direction === Direction.Ascending
+            ? array[pivot].value > array[i].value
+            : array[pivot].value < array[i].value
+        ) {
           array[i].part = 'left';
           array[i].color = ElementStates.Changing;
           left.push(array[i]);
@@ -148,6 +147,7 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
           await delay(DELAY_IN_MS);
         }
       }
+
       const itog = array
         .slice(0, start)
         .concat(left, array[pivot], right, array.slice(finish, array.length));
@@ -160,14 +160,11 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
         return i;
       });
 
-      setArr((prev) => {
-        prev = itog;
-        return prev;
-      });
+      setArr([...itog]);
 
       await delay(DELAY_IN_MS);
-      await sort(itog, 0, left.length);
-      await sort(itog, pivot, pivot + right.length);
+      await sort(itog, start, start + left.length);
+      await sort(itog, start + left.length + 1, finish);
     }
     setArr((prev) => {
       prev.map((i) => {
