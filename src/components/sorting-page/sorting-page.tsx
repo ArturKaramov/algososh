@@ -19,7 +19,7 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
   const [arr, setArr] = useState<IColorNumbers[]>([]);
   const [sortType, setSortType] = useState<'bubble' | 'selection' | 'quick'>('selection');
   const [buttonState, setButtonState] = useState<Direction | null>(null);
-
+  const [j, setJ] = useState<number>(0);
   useEffect(() => {
     setArray();
     return () => {
@@ -56,6 +56,18 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
     arr[firstIndex].value = arr[secondIndex].value;
     arr[secondIndex].value = temp;
     return arr;
+  };
+
+  const changeColor = (index: number, part?: 'left' | 'right') => {
+    setArr((prev) => {
+      return prev.map((elem, i) => {
+        if (i === index) {
+          elem.color = ElementStates.Changing;
+          elem.part = part;
+        }
+        return elem;
+      });
+    });
   };
 
   const bubbleSort = async (direction: Direction) => {
@@ -109,11 +121,7 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
   };
 
   const quickSort = async (direction: Direction) => {
-    const newArr = [...arr];
-
-    await sort(newArr);
-
-    async function sort(array: IColorNumbers[], start: number = 0, finish: number = array.length) {
+    async function sort(array: IColorNumbers[], start: number = 0, finish: number = arr.length) {
       if (finish - start < 2) return;
 
       const pivot = start + Math.floor(Math.random() * (finish - start));
@@ -122,8 +130,8 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
         prev[pivot].color = ElementStates.Modified;
         return prev;
       });
-      const right = [];
-      const left = [];
+      const right: IColorNumbers[] = [];
+      const left: IColorNumbers[] = [];
 
       for (let i = start; i < finish; i++) {
         if (i === pivot) {
@@ -134,31 +142,25 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
             ? array[pivot].value > array[i].value
             : array[pivot].value < array[i].value
         ) {
-          array[i].part = 'left';
-          array[i].color = ElementStates.Changing;
           left.push(array[i]);
-          setArr([...array]);
-          await delay(DELAY_IN_MS);
+          changeColor(i, 'left');
         } else {
-          array[i].part = 'right';
-          array[i].color = ElementStates.Changing;
           right.push(array[i]);
-          setArr([...array]);
-          await delay(DELAY_IN_MS);
+          changeColor(i, 'right');
         }
+        await delay(DELAY_IN_MS);
       }
 
       const itog = array
         .slice(0, start)
-        .concat(left, array[pivot], right, array.slice(finish, array.length));
-
-      itog.map((i) => {
-        if (i.color === ElementStates.Changing) {
-          i.color = ElementStates.Default;
-          delete i.part;
-        }
-        return i;
-      });
+        .concat(left, array[pivot], right, array.slice(finish, array.length))
+        .map((i) => {
+          if (i.color === ElementStates.Changing) {
+            i.color = ElementStates.Default;
+            delete i.part;
+          }
+          return i;
+        });
 
       setArr([...itog]);
 
@@ -166,6 +168,8 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
       await sort(itog, start, start + left.length);
       await sort(itog, start + left.length + 1, finish);
     }
+
+    await sort(arr);
     setArr((prev) => {
       prev.map((i) => {
         i.color = ElementStates.Default;
