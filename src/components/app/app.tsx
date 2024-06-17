@@ -1,13 +1,15 @@
-import React from "react";
-import styles from "./app.module.css";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { FibonacciPage } from "../fibonacci-page/fibonacci-page";
-import { ListPage } from "../list-page/list-page";
-import { MainPage } from "../main-page/main-page";
-import { QueuePage } from "../queue-page/queue-page";
-import { StringComponent } from "../string/string";
-import { SortingPage } from "../sorting-page/sorting-page";
-import { StackPage } from "../stack-page/stack-page";
+import React from 'react';
+import styles from './app.module.css';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { FibonacciPage } from '../fibonacci-page/fibonacci-page';
+import { ListPage } from '../list-page/list-page';
+import { MainPage } from '../main-page/main-page';
+import { QueuePage } from '../queue-page/queue-page';
+import { StringComponent } from '../string/string';
+import { SortingPage } from '../sorting-page/sorting-page';
+import { StackPage } from '../stack-page/stack-page';
+import { BinaryTreePage } from '../tree-page';
+
 import {
   BASE_URL,
   STRING_URL,
@@ -16,7 +18,8 @@ import {
   STACK_URL,
   QUEUE_URL,
   LIST_URL,
-} from "../../constants/url";
+  BINARY_URL,
+} from '../../constants/url';
 
 export function App() {
   return (
@@ -43,6 +46,9 @@ export function App() {
           </Route>
           <Route path={LIST_URL}>
             <ListPage />
+          </Route>
+          <Route path={BINARY_URL}>
+            <BinaryTreePage />
           </Route>
         </Switch>
       </BrowserRouter>

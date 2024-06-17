@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './sorting-page.module.css';
 import { SolutionLayout } from '../ui/solution-layout/solution-layout';
 import { RadioInput } from '../ui/radio-input/radio-input';
 import { Button } from '../ui/button/button';
-import { Direction } from '../../types/direction';
 import { Column } from '../ui/column/column';
 import { delay } from '../../utils/utils';
-import { IColorNumbers } from '../../types/types';
-import { ElementStates } from '../../types/element-states';
+import { Direction, ElementStates, IColorNumbers, Part } from '../../types/types';
 import { DELAY_IN_MS } from '../../constants/delays';
 import { MIN_LENGTH, MAX_LENGTH, MIN_VALUE, MAX_VALUE } from '../../constants/limits';
+import { v4 as uuidv4 } from 'uuid';
+import { resolve } from 'path';
 
 interface ISortingPage {
   initArr?: number[] | null;
 }
 
-export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
+export const SortingPage: FC<ISortingPage> = ({ initArr = null }) => {
   const [arr, setArr] = useState<IColorNumbers[]>([]);
   const [sortType, setSortType] = useState<'bubble' | 'selection' | 'quick'>('selection');
   const [buttonState, setButtonState] = useState<Direction | null>(null);
-  const [j, setJ] = useState<number>(0);
+
   useEffect(() => {
     setArray();
     return () => {
@@ -43,9 +43,11 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
     const length = Math.random() * (MAX_LENGTH - MIN_LENGTH) + MIN_LENGTH;
     const arr = [];
     for (let i = 0; i < length; i++) {
+      const id = uuidv4();
       arr.push({
         value: Math.floor(Math.random() * (MAX_VALUE - MIN_VALUE) + MIN_VALUE),
         color: ElementStates.Default,
+        id: id,
       });
     }
     setArr(arr);
@@ -58,15 +60,11 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
     return arr;
   };
 
-  const changeColor = (index: number, part?: 'left' | 'right') => {
+  const changeColor = (index: number, part: Part) => {
     setArr((prev) => {
-      return prev.map((elem, i) => {
-        if (i === index) {
-          elem.color = ElementStates.Changing;
-          elem.part = part;
-        }
-        return elem;
-      });
+      prev[index].color = ElementStates.Changing;
+      prev[index].part = part;
+      return [...prev];
     });
   };
 
@@ -121,6 +119,7 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
   };
 
   const quickSort = async (direction: Direction) => {
+    const stack = [];
     async function sort(array: IColorNumbers[], start: number = 0, finish: number = arr.length) {
       if (finish - start < 2) return;
 
@@ -143,10 +142,10 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
             : array[pivot].value < array[i].value
         ) {
           left.push(array[i]);
-          changeColor(i, 'left');
+          changeColor(i, Part.left);
         } else {
           right.push(array[i]);
-          changeColor(i, 'right');
+          changeColor(i, Part.right);
         }
         await delay(DELAY_IN_MS);
       }
@@ -162,7 +161,9 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
           return i;
         });
 
-      setArr([...itog]);
+      setArr((prev) => {
+        return prev.map((elem, i) => elem);
+      });
 
       await delay(DELAY_IN_MS);
       await sort(itog, start, start + left.length);
@@ -257,8 +258,8 @@ export const SortingPage: React.FC<ISortingPage> = ({ initArr = null }) => {
         />
       </div>
       <div className={styles.histogram} data-testid="array">
-        {arr.map((obj, i) => (
-          <Column index={obj.value} key={i} state={obj.color} part={obj.part} />
+        {arr.map((obj) => (
+          <Column index={obj.value} key={obj.id} state={obj.color} part={obj.part} />
         ))}
       </div>
     </SolutionLayout>

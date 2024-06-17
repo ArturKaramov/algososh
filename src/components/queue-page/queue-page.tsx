@@ -1,22 +1,22 @@
-import React, { useState, useMemo } from "react";
-import styles from "./queue-page.module.css";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { Input } from "../ui/input/input";
-import { Button } from "../ui/button/button";
-import { Queue } from "../../utils/queue";
-import { QUEUE_SIZE } from "../../constants/limits";
-import { Circle } from "../ui/circle/circle";
-import { ElementStates } from "../../types/element-states";
-import { delay } from "../../utils/utils";
-import { HEAD, TAIL } from "../../constants/element-captions";
-import { SHORT_DELAY_IN_MS } from "../../constants/delays";
-import { useForm } from "../../hooks/useForm";
+import React, { useState, useMemo } from 'react';
+import styles from './queue-page.module.css';
+import { SolutionLayout } from '../ui/solution-layout/solution-layout';
+import { Input } from '../ui/input/input';
+import { Button } from '../ui/button/button';
+import { Queue } from '../../utils/queue';
+import { QUEUE_SIZE } from '../../constants/limits';
+import { Circle } from '../ui/circle/circle';
+import { ElementStates } from '../../types/types';
+import { delay } from '../../utils/utils';
+import { HEAD, TAIL } from '../../constants/element-captions';
+import { SHORT_DELAY_IN_MS } from '../../constants/delays';
+import { useForm } from '../../hooks/useForm';
 
 export const QueuePage: React.FC = () => {
   const [queue] = useState(new Queue<string>(QUEUE_SIZE));
   const [data, setData] = useState<(string | null)[]>(queue.getItems());
   const { values, handleChange, setValues } = useForm<{ element: string }>({
-    element: "",
+    element: '',
   });
   const [color, setColor] = useState<{ [key: string]: boolean }>({
     HEAD: false,
@@ -30,7 +30,7 @@ export const QueuePage: React.FC = () => {
 
   const disable = useMemo(
     () => Object.values(loader).some((load) => load),
-    [JSON.stringify(loader)]
+    [JSON.stringify(loader)],
   );
 
   const addItem = async () => {
@@ -46,7 +46,7 @@ export const QueuePage: React.FC = () => {
       tail: false,
     });
     setData([...queue.getItems()]);
-    setValues({ element: "" });
+    setValues({ element: '' });
     setLoader({ ...loader, add: false });
   };
 
@@ -114,11 +114,10 @@ export const QueuePage: React.FC = () => {
         {data.map((item, i) => (
           <li key={i}>
             <Circle
-              letter={item ? item : ""}
+              letter={item ? item : ''}
               index={i}
               state={
-                (i === queue.getHead() && color.head) ||
-                (i === queue.getTail() && color.tail)
+                (i === queue.getHead() && color.head) || (i === queue.getTail() && color.tail)
                   ? ElementStates.Changing
                   : ElementStates.Default
               }

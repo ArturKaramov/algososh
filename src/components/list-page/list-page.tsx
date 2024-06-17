@@ -1,26 +1,24 @@
-import React, { useEffect, useState, useMemo } from "react";
-import styles from "./list-page.module.css";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { Input } from "../ui/input/input";
-import { Button } from "../ui/button/button";
-import { ILinkedList, LinkedList } from "../../utils/linked-list";
-import { Circle } from "../ui/circle/circle";
-import { INIT_LIST } from "../../constants/limits";
-import { ArrowIcon } from "../ui/icons/arrow-icon";
-import { SHORT_DELAY_IN_MS } from "../../constants/delays";
-import { delay } from "../../utils/utils";
-import { ElementStates } from "../../types/element-states";
-import { HEAD, TAIL } from "../../constants/element-captions";
-import { useForm } from "../../hooks/useForm";
+import React, { useEffect, useState, useMemo } from 'react';
+import styles from './list-page.module.css';
+import { SolutionLayout } from '../ui/solution-layout/solution-layout';
+import { Input } from '../ui/input/input';
+import { Button } from '../ui/button/button';
+import { ILinkedList, LinkedList } from '../../utils/linked-list';
+import { Circle } from '../ui/circle/circle';
+import { INIT_LIST } from '../../constants/limits';
+import { ArrowIcon } from '../ui/icons/arrow-icon';
+import { SHORT_DELAY_IN_MS } from '../../constants/delays';
+import { delay } from '../../utils/utils';
+import { ElementStates } from '../../types/types';
+import { HEAD, TAIL } from '../../constants/element-captions';
+import { useForm } from '../../hooks/useForm';
 
 export const ListPage: React.FC = () => {
-  const [list] = useState<ILinkedList<number | string>>(
-    new LinkedList<number | string>()
-  );
+  const [list] = useState<ILinkedList<number | string>>(new LinkedList<number | string>());
   const { values, handleChange, setValues } = useForm<{
     node: number | string;
     index: string;
-  }>({ node: "", index: "" });
+  }>({ node: '', index: '' });
   const [nodes, setNodes] = useState<(number | string)[]>([]);
   const [color, setColor] = useState<{ [key: number]: ElementStates }>({});
   const [head, setHead] = useState<number | string | null>(null);
@@ -43,13 +41,10 @@ export const ListPage: React.FC = () => {
 
   const disable = useMemo(
     () => Object.values(loader).some((val) => val === true),
-    [JSON.stringify(loader)]
+    [JSON.stringify(loader)],
   );
 
-  const isValid = useMemo(
-    () => !(parseInt(values.index) < nodes.length),
-    [nodes, values.index]
-  );
+  const isValid = useMemo(() => !(parseInt(values.index) < nodes.length), [nodes, values.index]);
 
   useEffect(() => {
     INIT_LIST.forEach((item: string | number) => {
@@ -68,7 +63,7 @@ export const ListPage: React.FC = () => {
     setNodes([...list.print()]);
     await delay(SHORT_DELAY_IN_MS);
     setColor({ 0: ElementStates.Default });
-    setValues({ node: "", index: "" });
+    setValues({ node: '', index: '' });
     setLoader({ ...loader, addHead: false });
   };
 
@@ -83,7 +78,7 @@ export const ListPage: React.FC = () => {
     setNodes([...list.print()]);
     await delay(SHORT_DELAY_IN_MS);
     setColor({});
-    setValues({ node: "", index: "" });
+    setValues({ node: '', index: '' });
     setLoader({ ...loader, addTail: false });
   };
 
@@ -106,7 +101,7 @@ export const ListPage: React.FC = () => {
       setNodes([...list.print()]);
       await delay(SHORT_DELAY_IN_MS);
       setColor({});
-      setValues({ node: "", index: "" });
+      setValues({ node: '', index: '' });
       setLoader({ ...loader, addIndex: false });
     }
   };
@@ -147,7 +142,7 @@ export const ListPage: React.FC = () => {
       await delay(SHORT_DELAY_IN_MS);
       setTail(null);
       setNodes([...list.print()]);
-      setValues({ node: "", index: "" });
+      setValues({ node: '', index: '' });
       setLoader({ ...loader, delIndex: false });
     }
   };
@@ -222,26 +217,18 @@ export const ListPage: React.FC = () => {
           <li className={styles.circle} key={i}>
             <Circle
               state={i in color ? color[i] : undefined}
-              letter={i === tail ? "" : item.toString()}
+              letter={i === tail ? '' : item.toString()}
               extraClass="ml-8 mr-8"
               head={
                 i === head ? (
-                  <Circle
-                    letter={values.node.toString()}
-                    state={ElementStates.Changing}
-                    isSmall
-                  />
+                  <Circle letter={values.node.toString()} state={ElementStates.Changing} isSmall />
                 ) : i === 0 ? (
                   HEAD
                 ) : null
               }
               tail={
                 i === tail ? (
-                  <Circle
-                    letter={item.toString()}
-                    state={ElementStates.Changing}
-                    isSmall
-                  />
+                  <Circle letter={item.toString()} state={ElementStates.Changing} isSmall />
                 ) : i === nodes.length - 1 ? (
                   TAIL
                 ) : null

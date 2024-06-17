@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { Stack } from "../../utils/stack";
-import styles from "./stack-page.module.css";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { Input } from "../ui/input/input";
-import { Button } from "../ui/button/button";
-import { Circle } from "../ui/circle/circle";
-import { ElementStates } from "../../types/element-states";
-import { delay } from "../../utils/utils";
-import { SHORT_DELAY_IN_MS } from "../../constants/delays";
-import { useForm } from "../../hooks/useForm";
+import React, { useState } from 'react';
+import { Stack } from '../../utils/stack';
+import styles from './stack-page.module.css';
+import { SolutionLayout } from '../ui/solution-layout/solution-layout';
+import { Input } from '../ui/input/input';
+import { Button } from '../ui/button/button';
+import { Circle } from '../ui/circle/circle';
+import { ElementStates } from '../../types/types';
+import { delay } from '../../utils/utils';
+import { SHORT_DELAY_IN_MS } from '../../constants/delays';
+import { useForm } from '../../hooks/useForm';
 
 export const StackPage: React.FC = () => {
-  const { values, handleChange, setValues } = useForm({ element: "" });
+  const { values, handleChange, setValues } = useForm({ element: '' });
   const [stack] = useState(new Stack<string>());
   const [data, setData] = useState<string[]>([]);
   const [color, setColor] = useState<boolean>(false);
@@ -25,7 +25,7 @@ export const StackPage: React.FC = () => {
     setLoader({ ...loader, add: true });
     stack.push(values.element);
     setData([...stack.getItems()]);
-    setValues({ element: "" });
+    setValues({ element: '' });
     setColor(true);
     await delay(SHORT_DELAY_IN_MS);
     setColor(false);
@@ -95,11 +95,9 @@ export const StackPage: React.FC = () => {
             <Circle
               letter={item}
               index={i}
-              head={i === stack.getSize() - 1 ? "top" : null}
+              head={i === stack.getSize() - 1 ? 'top' : null}
               state={
-                i === stack.getSize() - 1 && color
-                  ? ElementStates.Changing
-                  : ElementStates.Default
+                i === stack.getSize() - 1 && color ? ElementStates.Changing : ElementStates.Default
               }
             />
           </li>

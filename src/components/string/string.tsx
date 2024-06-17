@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import styles from "./string.module.css";
-import { SolutionLayout } from "../ui/solution-layout/solution-layout";
-import { Input } from "../ui/input/input";
-import { Button } from "../ui/button/button";
-import { Circle } from "../ui/circle/circle";
-import { delay } from "../../utils/utils";
-import { DELAY_IN_MS } from "../../constants/delays";
-import { ElementStates } from "../../types/element-states";
+import React, { useState } from 'react';
+import styles from './string.module.css';
+import { SolutionLayout } from '../ui/solution-layout/solution-layout';
+import { Input } from '../ui/input/input';
+import { Button } from '../ui/button/button';
+import { Circle } from '../ui/circle/circle';
+import { delay } from '../../utils/utils';
+import { DELAY_IN_MS } from '../../constants/delays';
+import { ElementStates } from '../../types/types';
 
 export const StringComponent = () => {
   const [word, setWord] = useState<string[]>([]);
@@ -14,26 +14,18 @@ export const StringComponent = () => {
   const [buttonState, setButtonState] = useState<boolean>(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWord(e.target.value.split(""));
+    setWord(e.target.value.split(''));
     setColor([]);
   };
 
-  const swap = (
-    arr: string[],
-    firstIndex: number,
-    secondIndex: number
-  ): void => {
+  const swap = (arr: string[], firstIndex: number, secondIndex: number): void => {
     let temp = arr[firstIndex];
     arr[firstIndex] = arr[secondIndex];
     arr[secondIndex] = temp;
     setWord(arr.slice(0));
   };
 
-  const changeColors = async (
-    arr: ElementStates[],
-    firstIndex: number,
-    secondIndex: number
-  ) => {
+  const changeColors = async (arr: ElementStates[], firstIndex: number, secondIndex: number) => {
     arr[firstIndex] = ElementStates.Changing;
     arr[secondIndex] = ElementStates.Changing;
     setColor(arr.slice(0));
@@ -66,13 +58,13 @@ export const StringComponent = () => {
           isLimitText={true}
           maxLength={11}
           name="string"
-          value={word.join("")}
+          value={word.join('')}
           onChange={onChange}
           disabled={buttonState}
           data-testid="input"
         />
         <Button
-          text={"Развернуть"}
+          text={'Развернуть'}
           type="submit"
           onClick={reverseWithDelay}
           disabled={!word.length}
@@ -83,10 +75,7 @@ export const StringComponent = () => {
       <ul className={styles.circleList}>
         {word.map((letter, i) => (
           <li key={i} data-testid="letter" data-letter={letter}>
-            <Circle
-              state={color[i] ? color[i] : ElementStates.Default}
-              letter={letter}
-            />
+            <Circle state={color[i] ? color[i] : ElementStates.Default} letter={letter} />
           </li>
         ))}
       </ul>
